@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def getData(sport):
-	folder='C:\Users\Ish\Desktop\Aaron\\'
+	folder='/Users/Ish/Documents/SafeLeads/Results/'
 	path=folder+'/'+sport+'_res'
 
 	data=pandas.read_csv(path+'/'+sport+'_all_lead.csv', parse_dates=False,\
@@ -131,7 +131,7 @@ def prepLeadHeatMap(lead):
 	flatT=np.tile(seconds,games)
 	return flatT, abs(flatLead)
 	
-def stdLead(lead):
+def sdLead(lead):
 	scope=len(lead[0])
 	posLead=abs(lead)
 	negLead=-posLead

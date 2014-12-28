@@ -3,8 +3,8 @@ import pandas
 import sys
 
 #sport=sys.argv[1]
-def sm(sport):
-	folder='C:\Users\Ish\Desktop\Aaron\\'
+def Lead(sport):
+	folder='/Users/Ish/Documents/SafeLeads/Results/'
 	path=folder+'/'+sport+'_res'
 
 	ev_prob=pandas.Series.from_csv(path+'/'+sport+'_eventProb.csv',parse_dates=False)
@@ -43,12 +43,20 @@ def sm(sport):
 				inEvTime=events[i][thisGameEvents[j]:] #till the end
 				scoredEvents[thisGameEvents[j]:]=inEvTime*score
 		lead[i]=np.cumsum(scoredEvents)
-
+	return lead
+	
+def inLead(lead):
+	games=len(lead)
+	scope=len(lead[0])
 
 	#Which team is in the lead at any given time
 	inLead=np.zeros(games*scope).reshape(games,scope) 
 	inLead[lead>0]=1 #team who scored first is in the lead
 	inLead[lead<0]=-1
+	return inLead
+	
+def lastChange(inLead):
+	games=len(inLead)
 	tr=-1*np.ones(games) #array for safe lead times - 1 for ties
 	for i in xrange(games): #for each game
 		winner=inLead[i,-1] #the last element of inLead shows who's the winner

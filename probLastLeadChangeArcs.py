@@ -1,6 +1,6 @@
-from UnbiasedRW import rwk
-from SimpleModel import sm
-from leadOverTimeLatest import lt
+import UnbiasedRW as rwk
+import SimpleModel as sm
+import leadOverTimeLatest as lt
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -56,37 +56,46 @@ def getBinWidth(bins):
 def plotBathtub(sport):
 	if sport=='NBA':
 		scope=2880
+		seasons='2002-2010'
 		bins=NBAbins()
 	else:
 		scope=3600
+		seasons='2000-2009'
 		if sport=='NHL':
 			bins=NHLbins()
 		elif sport=='CFB':
 			bins=NFLbins()
 		elif sport=='NFL':
 			bins=NFLbins()
-	
+
 	binw=getBinWidth(bins)
 	
 	step=120.0
-	s=lt(sport)
-	rw=rwk(sport)
-	sr=sm(sport)
+	data=lt.getData(sport)
+	lead=lt.Lead(data, sport)
+	#inLead=lt.inLead(lead)
+	#s=lt.lastChange(inLead)
+	m,s=lt.maxLeadTime(lead)
+	# rw_lead=rwk.Lead(sport)
+	# rw_inLead=rwk.inLead(rw_lead)
+	# rw=rwk.lastChange(rw_inLead)
+	sm_lead=sm.Lead(sport)
+	#sm_inLead=sm.inLead(sm_lead)
+	#sr=sm.lastChange(sm_inLead)
+	msr,sr=lt.maxLeadTime(sm_lead)
 
 	h,b=np.histogram(s, bins)
 	hcorr=h/(binw*len(s))
-	plt.scatter(b[:len(bins)-1], hcorr, c='blue',marker='o',label='Empirical data') 
-	hr,br=np.histogram(sr,bins,density=True)
+	plt.scatter(b[:len(bins)-1], hcorr, c='blue',marker='o',label=sport+' games, seasons '+seasons) 
+	hr,br=np.histogram(sr,bins)
 	hrcorr=hr/(binw*len(sr))
 	plt.plot(br[:len(bins)-1],hrcorr,c='green',linewidth=2,label='Inhomogeneous Poisson Process')
 	#ubiased RW
-	rwstart=min(rw)
-	rwstep=20.0
-	rwbins=(scope-rwstart)/rwstep
-	rwbinw=getBinWidth(rwbins)
-	h,b=np.histogram(rw, rwbins, density=True)
-	hcorr=h/(binsw*len(rw))
-	plt.plot(b[:rwbins], hcorr, c='orange',linewidth=2.5,label='Homogenous Poisson Process') 
+	# rwstep=20.0
+	# rwbins=scope/rwstep
+	# h,b=np.histogram(rw, rwbins)
+	# hcorr=h/(rwstep*len(rw))
+	# plt.plot(b[:rwbins], hcorr, c='orange',linewidth=2.5,label='Homogenous Poisson Process') 
 	x=np.array(range(scope)) #arcsine law
 	y=1/(np.pi*(x*(scope+1-x))**(0.5))
 	plt.plot(x,y,'r',linewidth=2,label='Arcsine Law')
@@ -94,6 +103,7 @@ def plotBathtub(sport):
 	plt.ylim(ymin=0,ymax=0.0027)
 	plt.legend()
 	plt.xlabel('Clock time (seconds)')
-	plt.ylabel('Probability of last lead change')
-	plt.savefig(sport+'varBinnedUpdate.pdf')
-	plt.close()
+	plt.ylabel('Probability of maximum lead')
+	#plt.savefig(sport+'varBinnedUpdate.pdf')
+	#plt.close()
+	plt.show()
