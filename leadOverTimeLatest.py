@@ -1,6 +1,7 @@
 import pandas
 import numpy as np
 import matplotlib.pyplot as plt
+import UnbiasedRW as rw
 
 def getData(sport):
 	folder='/Users/Ish/Documents/SafeLeads/Results/'
@@ -67,7 +68,7 @@ def inLead(lead):
 	inLead[lead<0]=-1
 	return inLead
 	
-def lastChange(inLead):
+def lastChangeMessy(inLead):
 	games=len(inLead)
 	tr=-1*np.ones(games) #array for safe lead times - 1 for ties
 	for i in xrange(games): #for each game
@@ -79,18 +80,49 @@ def lastChange(inLead):
 			else:
 				lastInd=switchInd[-1]
 				tr[i]=lastInd+1
+	return tr #this is for assign safety function below
+
+def lastChange(inLead):
+	tr=lastChangeMessy(inLead)
 	s=tr[tr>-1]
 	s=s+1
 	return s
 
-def numChanges(inLead):
+def assignSafety(lastLeadChange, sport): 
+	games=len(lastLeadChange)
+	if (sport=='NBA'):
+		scope=2880
+	else: 
+		scope=3600
+	safe=np.zeros((games,scope))
+	for i in xrange(games):
+		if lastLeadChange[i]!=-1:
+			safe[i,lastLeadChange[i]:]=1
+	return safe
+
+def  getZ(lead,safe,sport):
+	games=len(lead)
+	scope,scores=rw.getScope(sport)
+	p=scores/scope
+	D=1/(4*p)
+	z_tuples=np.zeros((games*scope,2))
+	count=0
+	for i in xrange(games):
+		for j in xrange(scope):
+			z=abs(lead[i][j])/((4*D*(scope-j))**0.5)
+			z_tuples[count,0]=z
+			z_tuples[count,1]=safe[i,j]
+			count+=1
+	return z_tuples
+
+def numChanges(inLead, lead):
 	games=len(inLead)
 	scope=len(inLead[0])
 	changes=-1*np.ones(games)
 	for i in xrange(games):
 		thisGameChanges=[]
 		for j in xrange(scope-1):
-			if (inLead[i][j]!=inLead[i][j+1]) & (inLead[i][j+1]!=0):
+			if (inLead[i][j]!=inLead[i][j+1]) & (lead[i][j+1]!=0):
 			#w/out (inLead[i][j+1]!=0) counts changes from and to 0, including 1st score
 			#w/ (inLead[i][j+1]!=0) doesn't count switching to 0, but still has 1st score
 				thisGameChanges.append(j+1)

@@ -7,7 +7,7 @@ s1=lt.lastChange(inl1)
 binw=getBinWidth(bins)
 p=91.99/scope
 v1=((2*q1-1)/p)**2
-D=4*(1/(4*p))
+D=1/(4*p)
 h,b=np.histogram(s1, bins)
 hcorr=h/(binw*len(s1))
 plt.scatter(b[:len(bins)-1], hcorr, c='blue',marker='o',label='Empirical data')
