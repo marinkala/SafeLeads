@@ -105,13 +105,14 @@ def  getZ(lead,safe,sport):
 	scope,scores=rw.getScope(sport)
 	p=scores/scope
 	D=1/(4*p)
-	z_tuples=np.zeros((games*scope,2))
+	z_tuples=np.zeros((games*scope,3))
 	count=0
 	for i in xrange(games):
 		for j in xrange(scope):
-			z=abs(lead[i][j])/((4*D*(scope-j))**0.5)
-			z_tuples[count,0]=z
-			z_tuples[count,1]=safe[i,j]
+			#z=abs(lead[i][j])/((4*D*(scope-j-1))**0.5)
+			z_tuples[count,0]=abs(lead[i,j])#z
+			z_tuples[count,1]=j+1#safe[i,j]
+			z_tuples[count,2]=safe[i,j]
 			count+=1
 	return z_tuples
 
@@ -122,11 +123,11 @@ def numChanges(inLead, lead):
 	for i in xrange(games):
 		thisGameChanges=[]
 		for j in xrange(scope-1):
-			if (inLead[i][j]!=inLead[i][j+1]) & (lead[i][j+1]!=0):
+			if (inLead[i][j]!=inLead[i][j+1]) & (lead[i][j]!=0):
 			#w/out (inLead[i][j+1]!=0) counts changes from and to 0, including 1st score
 			#w/ (inLead[i][j+1]!=0) doesn't count switching to 0, but still has 1st score
 				thisGameChanges.append(j+1)
-		changes[i]=len(thisGameChanges)-1 #to discount the first scoring event
+		changes[i]=len(thisGameChanges)#-1 #to discount the first scoring event
 	#changes.tofile(sport+'numLeadChangesZeros.txt',sep=',')
 	return changes
 	
