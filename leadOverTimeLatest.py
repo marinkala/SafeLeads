@@ -100,19 +100,35 @@ def assignSafety(lastLeadChange, sport):
 			safe[i,lastLeadChange[i]:]=1
 	return safe
 
+def BJ(lead):
+	games=len(lead)
+	scope=len(lead[0])
+	safe=np.zeros((games,scope))
+	for i in xrange(games):
+		for j in xrange(scope):
+			#if abs(lead[i,j])>((scope-j)**0.5+3):
+				#safe[i,j]=1
+			safe[i,j]=((abs(lead[i,j])-3)**2)/float(scope-j)
+	return safe
+
 def  getZ(lead,safe,sport):
+	folder='/Users/Ish/Documents/SafeLeads/Results/'
+	path=folder+'/'+sport+'_res'
+	score_dist=pandas.Series.from_csv(path+'/'+sport+'_scoreDist.csv',\
+	parse_dates=False).values
 	games=len(lead)
 	scope,scores=rw.getScope(sport)
 	p=scores/scope
-	D=1/(4*p)
-	z_tuples=np.zeros((games*scope,3))
+	dt=1/p
+	ell=np.dot(range(1,7),score_dist)
+	D=(ell**2)/(2*dt)
+	z_tuples=np.zeros((games*scope,2))
 	count=0
 	for i in xrange(games):
 		for j in xrange(scope):
-			#z=abs(lead[i][j])/((4*D*(scope-j-1))**0.5)
-			z_tuples[count,0]=abs(lead[i,j])#z
-			z_tuples[count,1]=j+1#safe[i,j]
-			z_tuples[count,2]=safe[i,j]
+			z=abs(lead[i][j])/((4*D*(scope-j))**0.5)
+			z_tuples[count,0]=z
+			z_tuples[count,1]=safe[i,j]
 			count+=1
 	return z_tuples
 
@@ -129,7 +145,7 @@ def numChanges(inLead, lead):
 				thisGameChanges.append(j+1)
 		changes[i]=len(thisGameChanges)#-1 #to discount the first scoring event
 	#changes.tofile(sport+'numLeadChangesZeros.txt',sep=',')
-	return changes
+	return changes #NBA mean: 9.3676; 
 	
 def firstChange(inLead):
 	games=len(inLead)

@@ -5,8 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def NBAbins():
-	small_step=3
-	big_step=20
+	small_step=3 #3
+	big_step=30 #20
 	bins1=np.arange(1,50,small_step)
 	bins2=np.arange(bins1[-1]+big_step,700,big_step)
 	bins3=np.arange(bins2[-1]+small_step,740,small_step)
@@ -20,8 +20,8 @@ def NBAbins():
 	return bins
 	
 def NFLbins():
-	small_step=3
-	big_step=20
+	small_step=8 #3
+	big_step=50 #20
 	#bins1=np.arange(1,250,small_step)
 	bins2=np.arange(1,880,big_step)
 	bins3=np.arange(bins2[-1]+small_step,920,small_step)
@@ -35,8 +35,8 @@ def NFLbins():
 	return bins
 	
 def NHLbins():
-	small_step=3
-	big_step=20
+	small_step=6 #3
+	big_step=30 #20
 	#bins1=np.arange(1,250,small_step)
 	bins2=np.arange(1,1180,big_step)
 	bins3=np.arange(bins2[-1]+small_step,1220,small_step)
