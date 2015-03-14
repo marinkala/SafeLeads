@@ -1,21 +1,22 @@
 import numpy as np
 import pandas
 import sys
+import UnbiasedRW as rw
 
 #sport=sys.argv[1]
 def Lead(sport):
 	folder='/Users/Ish/Documents/SafeLeads/Results/'
 	path=folder+'/'+sport+'_res'
 
-	#ev_prob=pandas.Series.from_csv(path+'/'+sport+'_eventProb.csv',parse_dates=False)
-	#ev=np.array(ev_prob.tolist()) #np.array for event probabilities
-	#scope=len(ev_prob)
-	scope=2880
+	ev_prob=pandas.Series.from_csv(path+'/'+sport+'_eventProb.csv',parse_dates=False)
+	ev=np.array(ev_prob.tolist()) #np.array for event probabilities
+	scope=len(ev_prob)
+	#scope, scores=rw.getScope(sport)
 	score_dist=pandas.Series.from_csv(path+'/'+sport+'_scoreDist.csv',\
 	parse_dates=False).values
 	games=scope*10
-	#event_prob=np.tile(ev,(games,1)) #repeat ev_prob as row so can compare
-	event_prob=91.99/scope
+	event_prob=np.tile(ev,(games,1)) #repeat ev_prob as row so can compare
+	#event_prob=scores/scope
 	bias=0.5
 
 	#Generate scoring events and the scores associated with each event - which team score

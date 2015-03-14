@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import sys
 
 dir=sys.argv[1]
-folder='C:\Users\Ish\Desktop\Aaron\\'
-path=folder+'/'+dir+'_res'
+folder='/Users/Ish/Documents/SafeLeads/Results/'
+path=folder+dir+'_res'
 
 if (dir=='NBA') | (dir=='NHL'):
 	term='PERIOD'
@@ -50,7 +50,7 @@ n=len(data.GAME_CODE.unique())#number of games
 ev_prob=pandas.Series(data=0.0,index=xrange(1,scope+1))
 for i in xrange(1,scope+1):
 	ev_prob[i]=len(data[data.event_time==i])/float(n)
-ev_prob.to_csv(path+'/'+dir+'_eventProb.csv')	
+ev_prob.to_csv(path+'/'+dir+'_eventProb.csv')
 
 #plt.plot(ev_prob)
 #plt.ylim(ymin=0,ymax=max(ev_prob)+0.005)

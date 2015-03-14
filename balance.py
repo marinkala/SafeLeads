@@ -4,8 +4,8 @@ from matplotlib import pyplot as plt
 import sys
 
 dir=sys.argv[1]
-folder='C:\Users\Ish\Desktop\Aaron\\'
-path=folder+'/'+dir+'_res'
+folder='/Users/Ish/Documents/SafeLeads/Results/'
+path=folder+dir+'_res'
 
 data=pandas.DataFrame.from_csv(path+'/'+dir+'_all_et.csv', \
 	parse_dates=False)

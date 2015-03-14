@@ -51,7 +51,7 @@ def Lead(data, sport):
 			else:
 				isStarter=1
 			events[thisGameEvents[j]]=thisGamePoints[j]*isStarter
-		lead[i]=np.cumsum(events)
+		lead[i]=np.cumsum(events) #return events instead of cunsum for score questions
 		#gameLead[i][0]=group.GAME_CODE.unique()
 		#gameLead[i][1]=lead[i][-1]
 		#create a list of games with corresponding last lead here!
@@ -111,7 +111,7 @@ def BJ(lead):
 			safe[i,j]=((abs(lead[i,j])-3)**2)/float(scope-j)
 	return safe
 
-def  getZ(lead,safe,sport):
+def getZ(lead,safe,sport):
 	folder='/Users/Ish/Documents/SafeLeads/Results/'
 	path=folder+'/'+sport+'_res'
 	score_dist=pandas.Series.from_csv(path+'/'+sport+'_scoreDist.csv',\
@@ -120,9 +120,9 @@ def  getZ(lead,safe,sport):
 	scope,scores=rw.getScope(sport)
 	p=scores/scope
 	dt=1/p
-	ell=np.dot(range(1,7),score_dist)
+	ell=np.dot(range(1,1+len(score_dist)),score_dist)
 	D=(ell**2)/(2*dt)
-	z_tuples=np.zeros((games*scope,2))
+	z_tuples=np.zeros((games*scope,2)) #3
 	count=0
 	for i in xrange(games):
 		for j in xrange(scope):
@@ -130,6 +130,7 @@ def  getZ(lead,safe,sport):
 			z_tuples[count,0]=z
 			z_tuples[count,1]=safe[i,j]
 			count+=1
+	#(pandas.DataFrame(z_tuples)).to_csv('../Results/'+sport+'leadTimeSafeTuples.csv',header=False,index=False)
 	return z_tuples
 
 def numChanges(inLead, lead):
@@ -201,3 +202,19 @@ def sdLead(lead):
 	leg=plt.gca().get_legend()
 	leg.draw_frame(False)
 	plt.show()
+
+def antipers(events):
+	games=len(events)
+	anti=np.zeros(games)
+	for i in xrange(games): #for all rows/all games
+		ev=events[i][np.nonzero(events[i])] #get only the scoring events, no zeros
+		match=0
+		for j in xrange(len(ev)-1): #for all pairs in this game
+			if np.sign(ev[j])==np.sign(ev[j+1]):
+				match+=1
+		try:		
+			anti[i]=match/float((len(ev)-1))
+		except ZeroDivisionError:
+			anti[i]=0
+	return anti
+

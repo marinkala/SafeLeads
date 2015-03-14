@@ -3,8 +3,8 @@ import os.path
 import sys
 
 dir=sys.argv[1]
-folder='C:\Users\Ish\Desktop\Aaron\\'
-path=folder+'/'+dir+'_data'
+folder='/Users/Ish/Documents/SafeLeads/Data/'
+path=folder+dir+'_data'
 
 if (dir=='NBA') | (dir=='NHL'):
 	term='PERIOD'
@@ -29,7 +29,7 @@ for filename in os.listdir(path):
 		data=data[data[term]<5]
 	
 	#combine events that are at the same time
-	grouped=data.groupby(['GAME_CODE','TEAM_ID', term,time])
+	grouped=data.groupby(['GAME_CODE', 'TEAM_ID',term,time]) 
 	data=grouped.POINTS.aggregate(sum).reset_index()
 	data['SEASON']=year
 
@@ -42,4 +42,4 @@ for filename in os.listdir(path):
 	df=df.append(data)
 
 df=df[['SEASON','GAME_CODE','TEAM_ID',term,time,'POINTS']].reset_index(drop=True)
-df.to_csv('C:\Users\Ish\Desktop\Aaron\\'+'/'+dir+'_res'+'/'+dir+'_all_clean.csv')
+df.to_csv('/Users/Ish/Documents/SafeLeads/Results/'+dir+'_res'+'/'+dir+'_all_clean.csv')

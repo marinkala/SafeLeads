@@ -5,21 +5,21 @@ import sys
 def getScope(sport):
 	if sport=='NBA':
 		scope=2880
-		scores=91.99
+		scores=93.56
 	else:
 		scope=3600
 		if sport=='NHL':
-			scores=3.81
+			scores=5.42
 		elif sport=='CFB':
-			scores=8.28
+			scores=8.46
 		elif sport=='NFL':
-			scores=7.34
+			scores=7.75
 	return scope, scores
 
 #sport=sys.argv[1]
 def Lead(sport):
 	scope, scores=getScope(sport)
-	games=scope*20
+	games=scope*100
 	bias=0.5
 
 	#Generate scoring events and the scores associated with each event - which team score
